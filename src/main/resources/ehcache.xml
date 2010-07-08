@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" monitoring="autodetect" 
+    xsi:noNamespaceSchemaLocation="http://ehcache.sf.net/ehcache.xsd" updateCheck="false">
+    <diskStore path="java.io.tmpdir" />
+
+    <cacheManagerPeerProviderFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheManagerPeerProviderFactory"
+        properties="connect=TCP(start_port=7500):
+        TCPPING(initial_hosts=10.13.43.50[7500],192.168.207.118[7500];port_range=10;timeout=3000;
+        num_initial_members=3;up_thread=true;down_thread=true):
+        VERIFY_SUSPECT(timeout=5000;down_thread=false;up_thread=false):
+        pbcast.NAKACK(down_thread=true;up_thread=true;gc_lag=100;retransmit_timeout=10000):
+        pbcast.GMS(join_timeout=10000;join_retry_timeout=10000;shun=false;
+        print_local_addr=false;down_thread=true;up_thread=true)" 
+        propertySeparator="::" />
+
+    <defaultCache maxElementsInMemory="10000" eternal="true"
+        overflowToDisk="true" timeToIdleSeconds="0" timeToLiveSeconds="0"
+        diskPersistent="false" diskExpiryThreadIntervalSeconds="120">
+        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+            properties="replicateAsynchronously=true, replicatePuts=true,
+                replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>
+    </defaultCache>
+
+    <cache name="pamirs-cache" maxElementsInMemory="10000"
+        eternal="true" overflowToDisk="true" timeToIdleSeconds="0"
+        timeToLiveSeconds="0" diskPersistent="false"
+        diskExpiryThreadIntervalSeconds="120">
+        <cacheEventListenerFactory class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+            properties="replicateAsynchronously=true, replicatePuts=true,
+                replicateUpdates=true, replicateUpdatesViaCopy=false, replicateRemovals=true"/>
+    </cache>
+</ehcache>

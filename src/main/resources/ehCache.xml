@@ -1,0 +1,60 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="ehcache.xsd">
+
+    <!--
+        CacheManager Configuration
+        ==========================
+        An ehcache.xml corresponds to a single CacheManager.
+        
+        See instructions below or the ehcache schema (ehcache.xsd) on how to configure.
+        
+        DiskStore configuration
+        =======================
+        
+        Sets the path to the directory where cache files are created.
+        
+        If the path is a Java System Property it is replaced by its value in the
+        running VM.
+        
+        The following properties are translated:
+        * user.home - User's home directory
+        * user.dir - User's current working directory
+        * java.io.tmpdir - Default temp file path
+        
+        Subdirectories can be specified below the property e.g. java.io.tmpdir/one
+    -->
+    <diskStore path="java.io.tmpdir" />
+
+
+
+
+
+
+    <!--
+        Mandatory Default Cache configuration. These settings will be applied to caches
+        created programmtically using CacheManager.add(String cacheName).
+        
+        The defaultCache has an implicit name "default" which is a reserved cache name.
+    -->
+    <defaultCache maxElementsInMemory="10000" eternal="false"
+        timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="true"
+        diskSpoolBufferSizeMB="30" maxElementsOnDisk="10000000"
+        diskPersistent="false" diskExpiryThreadIntervalSeconds="120"
+        memoryStoreEvictionPolicy="LRU" />
+
+
+    <!--
+        Sample cache named sampleCache1
+        This cache contains a maximum in memory of 10000 elements, and will expire
+        an element if it is idle for more than 5 minutes and lives for more than
+        10 minutes.
+        
+        If there are more than 10000 elements it will overflow to the
+        disk cache, which in this configuration will go to wherever java.io.tmp is
+        defined on your system. On a standard Linux system this will be /tmp"
+    -->
+    <cache name="pamirs-cache" maxElementsInMemory="10000"
+        eternal="false" overflowToDisk="false"
+        timeToIdleSeconds="300"
+        timeToLiveSeconds="600" memoryStoreEvictionPolicy="LRU" />
+</ehcache>
