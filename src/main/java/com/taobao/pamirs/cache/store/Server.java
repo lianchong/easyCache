@@ -15,10 +15,14 @@ import java.util.concurrent.Executors;
 
 import org.jgroups.Address;
 import org.jgroups.Channel;
+import org.jgroups.ChannelException;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
 import org.jgroups.ReceiverAdapter;
 import org.jgroups.View;
+import org.jgroups.blocks.MessageDispatcher;
+import org.jgroups.blocks.RequestHandler;
+import org.jgroups.blocks.RpcDispatcher;
 import org.jgroups.util.Promise;
 import org.jgroups.util.Streamable;
 import org.jgroups.util.Util;
@@ -28,19 +32,22 @@ public class Server extends ReceiverAdapter implements Master, Slave, Serializab
 	/**
      * 
      */
-	private static final long	                  serialVersionUID	= 1L;
-	private String	                              props	           = "tcp.xml";
+	private static final long	                  serialVersionUID	 = 1L;
+	private String	                              props	             = "tcp.xml";
 	private Channel	                              ch;
 
 	/** Maps task IDs to Tasks */
-	private final ConcurrentMap<ClusterID, Entry>	tasks	       = new ConcurrentHashMap<ClusterID, Entry>();
+	private final ConcurrentMap<ClusterID, Entry>	tasks	         = new ConcurrentHashMap<ClusterID, Entry>();
 
 	/** Used to handle received tasks */
-	private final ExecutorService	              thread_pool	   = Executors.newCachedThreadPool();
+	private final ExecutorService	              thread_pool	     = Executors.newCachedThreadPool();
 
 	private View	                              view;
-	private int	                                  rank	           = -1;
-	private int	                                  cluster_size	   = -1;
+	private int	                                  rank	             = -1;
+	private int	                                  cluster_size	     = -1;
+	private MessageDispatcher	                  dispatcher;
+	private RpcDispatcher	                      rpcDispatcher;
+	private final boolean	                      propagateException	= false;
 
 	public Server(final String props)
 	{
@@ -48,19 +55,54 @@ public class Server extends ReceiverAdapter implements Master, Slave, Serializab
 
 	}
 
+	public Server(final Channel channel) throws ChannelException
+	{
+		ch = channel;
+
+		ch.setReceiver(this);
+		ch.connect("PamirsTunnel");
+		rpcDispatcher = new RpcDispatcher(ch, null, null, this);
+	}
+
 	public void start() throws Exception
 	{
+
 		ch = new JChannel(props);
 
 		ch.setReceiver(this);
 		ch.connect("PamirsTunnel");
+		dispatcher = new MessageDispatcher(ch, null, null, new RequestHandler()
+		{
+
+			public Object handle(final Message msg)
+			{
+				System.out.println("got a message: " + msg);
+				if (propagateException)
+				{
+					throw new RuntimeException("failed to handle message: " + msg.getObject());
+				} else
+				{
+					return new String("success");
+				}
+			}
+
+		});
+		rpcDispatcher = new RpcDispatcher(ch, null, null, this);
 		log(ch.getInfo() + "");
+	}
+
+	public void callRemoteMethods(final String methodName, final Object[] values, final Class[] clazz)
+	{
+		rpcDispatcher.callRemoteMethods(null, methodName, values, clazz, org.jgroups.blocks.Request.GET_ALL,
+		        0);
 	}
 
 	public void stop()
 	{
 		thread_pool.shutdown();
 		ch.close();
+		dispatcher.stop();
+		rpcDispatcher.stop();
 	}
 
 	public String info()
@@ -469,6 +511,25 @@ public class Server extends ReceiverAdapter implements Master, Slave, Serializab
 			}
 		}
 
+	}
+
+	public int invokeMethod(final String props)
+	{
+		try
+		{
+			System.out.println("Ö´ÐÐ: " + props);
+			// final Object obj =
+			// AppContext.getApplicationContext().getBean("applicationServiceImpl");
+			// if (obj != null)
+			// {
+			// obj.getClass().getMethod("initializeAllDeclaredConsumerBeans").invoke(obj);
+			// }
+
+		} catch (final Exception e)
+		{
+			System.err.println("Error: " + e.getMessage());
+		}
+		return 1;
 	}
 
 }

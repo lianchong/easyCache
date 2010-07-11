@@ -10,29 +10,26 @@
             http://www.springframework.org/schema/context
             http://www.springframework.org/schema/context/spring-context-2.5.xsd  
             ">
+	<bean id="shineClusterChannelName" class="java.lang.String">
+		<constructor-arg type="java.lang.String" value="PAMIRS_SHINE" />
+	</bean>
 
-	<bean id="cacheMap" class="java.util.concurrent.ConcurrentHashMap"
-		scope="prototype" />
-	<!-- <bean id="cacheManager"
-		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-		<property name="configLocation">
-			<value>classpath:/ehCache.xml</value>
-		</property>
-	</bean> -->
-	<bean id="methodSyncServerBean" class="com.taobao.pamirs.cache.event.MethodSyncServerBean" />
-	<bean class="com.taobao.pamirs.cache.proxy.CacheAspect"
-		factory-method="aspectOf">
-		
-		<property name="methodSyncServerBean" ref="methodSyncServerBean" />
+	<bean id="shineClusterChannel" class="com.taobao.pamirs.cache.store.ExtendedChannel"
+		factory-method="getInstance">
+	</bean>
+
+
+	<bean id="methodSyncServerBean" class="com.taobao.pamirs.cache.event.MethodSyncServerBean">
+		<property name="channel" ref="shineClusterChannel" />
 	</bean>
 	
-
-
-
+	   <bean class="com.taobao.pamirs.cache.proxy.CacheAspect"
+        factory-method="aspectOf">
+        <property name="methodSyncServerBean" ref="methodSyncServerBean" />
+    </bean>
+    
+    <bean id="contextApplicationContextProvider" class="com.taobao.pamirs.cache.store.ApplicationContextProvider"></bean>
+    
 
 	<aop:aspectj-autoproxy proxy-target-class="true" />
-	<context:component-scan base-package="java.util.concurrent">
-		<context:include-filter type="annotation"
-			expression="com.taobao.pamirs.cache.Cached" />
-	</context:component-scan>
 </beans>

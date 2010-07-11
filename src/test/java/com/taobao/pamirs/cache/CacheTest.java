@@ -2,21 +2,21 @@ package com.taobao.pamirs.cache;
 
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 
-import com.taobao.pamirs.cache.event.MethodSyncServerBean;
+import com.taobao.pamirs.cache.store.ExtendedChannel;
 
 public class CacheTest extends AbstractDependencyInjectionSpringContextTests
 {
 
-	private MethodSyncServerBean	methodSyncServerBean;
+	private ExtendedChannel	extendedChannel;
 
-	public MethodSyncServerBean getMethodSyncServerBean()
+	public ExtendedChannel getExtendedChannel()
 	{
-		return methodSyncServerBean;
+		return extendedChannel;
 	}
 
-	public void setMethodSyncServerBean(final MethodSyncServerBean methodSyncServerBean)
+	public void setExtendedChannel(final ExtendedChannel extendedChannel)
 	{
-		this.methodSyncServerBean = methodSyncServerBean;
+		this.extendedChannel = extendedChannel;
 	}
 
 	@Override
@@ -25,10 +25,9 @@ public class CacheTest extends AbstractDependencyInjectionSpringContextTests
 		return "/pamirs-cache-config.xml";
 	}
 
-	@SuppressWarnings(
-	{ "rawtypes", "unchecked" })
-	public void testCache()
+	public void test()
 	{
-		System.err.println(methodSyncServerBean.getServerInstance());
+
 	}
+
 }

@@ -5,6 +5,8 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.event.CacheEventListener;
 
+import com.taobao.pamirs.cache.Sync;
+
 public class PamirsCacheEvent implements CacheEventListener
 {
 	@Override
@@ -13,6 +15,13 @@ public class PamirsCacheEvent implements CacheEventListener
 		return null;
 	}
 
+	@Sync
+	public void test(final Object obj)
+	{
+
+	}
+
+	@Sync
 	public void dispose()
 	{
 		// TODO Auto-generated method stub

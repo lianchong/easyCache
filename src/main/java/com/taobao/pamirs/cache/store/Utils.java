@@ -217,7 +217,7 @@ public class Utils
 		}
 
 		out.write(1);
-		magic_number = ClassConfigurator.getInstance().getMagicNumber(obj.getClass());
+		magic_number = ClassConfigurator.getMagicNumber(obj.getClass());
 		// write the magic number or the class name
 		if (magic_number == -1)
 		{
@@ -324,7 +324,7 @@ public class Utils
 			if (use_magic_number)
 			{
 				final short magic_number = in.readShort();
-				clazz = ClassConfigurator.getInstance().get(magic_number);
+				clazz = ClassConfigurator.get(magic_number);
 				if (clazz == null)
 				{
 					throw new ClassNotFoundException("Class for magic number " + magic_number
@@ -333,7 +333,7 @@ public class Utils
 			} else
 			{
 				classname = in.readUTF();
-				clazz = ClassConfigurator.getInstance().get(classname);
+				clazz = ClassConfigurator.get(classname);
 				if (clazz == null)
 				{
 					throw new ClassNotFoundException(classname);

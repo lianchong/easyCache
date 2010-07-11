@@ -2,10 +2,11 @@ package com.taobao.pamirs.cache;
 
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 
-import com.taobao.pamirs.cache.store.Server;
+import com.taobao.pamirs.cache.event.PamirsCacheEvent;
 
 public class MethodSyncTest extends AbstractDependencyInjectionSpringContextTests
 {
+
 	@Override
 	protected String getConfigPath()
 	{
@@ -13,7 +14,7 @@ public class MethodSyncTest extends AbstractDependencyInjectionSpringContextTest
 	}
 
 	@Sync
-	private void fun()
+	public void fun()
 	{
 
 	}
@@ -21,10 +22,12 @@ public class MethodSyncTest extends AbstractDependencyInjectionSpringContextTest
 	public void testUnicast() throws Exception
 	{
 
-		for (int i = 0; i < 100; ++i)
+		for (int i = 0; i < 50; ++i)
 		{
-			Server.main(null);
+			new PamirsCacheEvent().test(i);
+			Thread.sleep(500);
 		}
+
 	}
 
 }
