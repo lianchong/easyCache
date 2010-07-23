@@ -1,0 +1,111 @@
+BuddyReplicationConfig
+
+An XML element that contains detailed buddy replication configuration. See section on Buddy Replication for details.
+
+CacheLoaderConfig
+
+An XML element that contains detailed cache loader configuration. See chapter on Cache Loaders for details.
+
+CacheLoaderConfiguration
+
+Deprecated . Use CacheLoaderConfig .
+
+CacheMode
+
+LOCAL, REPL_SYNC, REPL_ASYNC, INVALIDATION_SYNC or INVALIDATION_ASYNC. Defaults to LOCAL. See the chapter on Clustering for details.
+
+ClusterConfig
+
+The configuration of the underlying JGroups stack. Ignored if MultiplexerService and MultiplexerStack are used. See the various *-service.xml files in the source distribution etc/META-INF folder for examples. See the JGroups documentation or the JGroups wiki page for more information.
+
+ClusterName
+
+Name of cluster. Needs to be the same for all nodes in a cluster in order for them to communicate with each other.
+
+EvictionPolicyConfig
+
+Configuration parameter for the specified eviction policy. See chapter on eviction policies for details. This property is dynamic .
+
+ExposeManagementStatistics
+
+Specifies whether interceptors that provide statistics should have statistics gathering enabled at startup. Also controls whether a CacheMgmtInterceptor (whose sole purpose is gathering statistics) should be added to the interceptor chain. Default value is true . See the JBoss Cache Statistics section section for more details.
+
+FetchInMemoryState
+
+Whether or not to acquire the initial in-memory state from existing members. Allows for hot caches when enabled. Also see the fetchPersistentState element in CacheLoaderConfig . Defaults to true . This property is dynamic .
+
+InactiveOnStartup
+
+Whether or not the entire tree is inactive upon startup, only responding to replication messages after activateRegion() is called to activate one or more parts of the tree. If true, property FetchInMemoryState is ignored. This property should only be set to true if UseRegionBasedMarshalling is also true .
+
+StateRetrievalTimeout
+
+Time in milliseconds to wait for state retrieval. This should be longer than LockAcquisitionTimeout as the node providing state may need to wait that long to acquire necessary read locks on the cache. This property is dynamic .
+
+IsolationLevel
+
+Node locking isolation level : SERIALIZABLE, REPEATABLE_READ (default), READ_COMMITTED, READ_UNCOMMITTED, and NONE. Note that this is ignored if NodeLockingScheme is OPTIMISTIC. Case doesn't matter. See documentation on Transactions and Concurrency for more details.
+
+LockAcquisitionTimeout
+
+Time in milliseconds to wait for a lock to be acquired. If a lock cannot be acquired an exception will be thrown. This property is dynamic .
+
+LockParentForChildInsertRemove
+
+Controls whether inserting or removing a node requires a write lock on the node's parent (when pessimistic locking is used) or whether it results in an update of the parent node's version (when optimistic locking is used). The default value is false .
+
+MarshallerClass
+
+An instance of org.jboss.cache.marshall.Marshaller used to serialize data to byte streams. Defaults to org.jboss.cache.marshall.VersionAwareMarshaller if not specified.
+
+MultiplexerService
+
+The JMX object name of the service that defines the JGroups multiplexer. In JBoss AS 5.0 this service is normally defined in the jgroups-multiplexer.sar. This XML attribute can only be handled by the JBoss AS MBean deployment services; if it is included in a file passed to a CacheFactory the factory's creation of the cache will fail. Inside JBoss AS, the attribute should be specified using the "depends optional-attribute-name" syntax shown in the example above. Inside the AS if this attribute is defined, an instance of org.jgroups.jmx.JChannelFactoryMBean will be injected into the CacheJmxWrapper which will use it to obtain a multiplexed JGroups channel. The configuration of the channel will be that associated with MultiplexerStack . The ClusterConfig attribute will be ignored.
+
+MultiplexerStack
+
+The name of the JGroups stack to be used with the cache cluster. Stacks are defined in the configuration of the external MultiplexerService discussed above. In JBoss AS 5 this is normally done in the jgroups-multiplexer.sar/META-INF/multiplexer-stacks.xml file. The default stack is udp . This attribute is used in conjunction with MultiplexerService .
+
+NodeLockingScheme
+
+May be PESSIMISTIC (default) or OPTIMISTIC.
+
+ReplicationVersion
+
+Tells the cache to serialize cluster traffic in a format consistent with that used by the given release of JBoss Cache. Different JBoss Cache versions use different wire formats; setting this attribute tells a cache from a later release to serialize data using the format from an earlier release. This allows caches from different releases to interoperate. For example, a 2.1.0 cache could have this value set to "2.0.0", allowing it to interoperate with a 2.0.0 cache. Valid values are a dot-separated release number, with any final qualifer also separated by a dot, e.g. "2.0.0" or "2.0.0.GA". Values that indicate a 1.x release are not supported in the 2.x series.
+
+ReplQueueInterval
+
+Time in milliseconds for elements from the replication queue to be replicated. Only used if UseReplQueue is enabled. This property is dynamic .
+
+ReplQueueMaxElements
+
+Max number of elements in the replication queue until replication kicks in. Only used if UseReplQueue is enabled. This property is dynamic .
+
+SyncCommitPhase
+
+This option is used to control the behaviour of the commit part of a 2-phase commit protocol, when using REPL_SYNC (does not apply to other cache modes). By default this is set to false . There is a performance penalty to enabling this, especially when running in a large cluster, but the upsides are greater cluster-wide data integrity. See the chapter on clustered caches for more information on this. This property is dynamic .
+
+SyncReplTimeout
+
+For synchronous replication: time in milliseconds to wait until replication acks have been received from all nodes in the cluster. It is usually best that this is greater than LockAcquisitionTimeout . This property is dynamic .
+
+SyncRollbackPhase
+
+This option is used to control the behaviour of the rollback part of a 2-phase commit protocol, when using REPL_SYNC (does not apply to other cache modes). By default this is set to false . There is a performance penalty to enabling this, especially when running in a large cluster, but the upsides are greater cluster-wide data integrity. See the chapter on clustered caches for more information on this. This property is dynamic .
+
+TransactionManagerLookupClass
+
+The fully qualified name of a class implementing TransactionManagerLookup. Default is JBossTransactionManagerLookup. There is also an option of GenericTransactionManagerLookup for example.
+
+UseInterceptorMbeans
+
+Deprecated . Use ExposeManagementStatistics .
+
+UseRegionBasedMarshalling
+
+When unmarshalling replicated data, this option specifies whether or not to support use of different classloaders for different cache regions. This defaults to false if unspecified.
+
+UseReplQueue
+
+For asynchronous replication: whether or not to use a replication queue. Defaults to false .

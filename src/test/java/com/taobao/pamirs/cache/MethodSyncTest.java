@@ -10,7 +10,7 @@ public class MethodSyncTest extends AbstractDependencyInjectionSpringContextTest
 	@Override
 	protected String getConfigPath()
 	{
-		return "/pamirs-cache-config.xml";
+		return "/pamirs-cache-config-test.xml";
 	}
 
 	@Sync
@@ -22,11 +22,7 @@ public class MethodSyncTest extends AbstractDependencyInjectionSpringContextTest
 	public void testUnicast() throws Exception
 	{
 
-		for (int i = 0; i < 50; ++i)
-		{
-			new PamirsCacheEvent().test(i);
-			Thread.sleep(500);
-		}
+		new PamirsCacheEvent().test(0);
 
 	}
 

@@ -10,26 +10,26 @@
             http://www.springframework.org/schema/context
             http://www.springframework.org/schema/context/spring-context-2.5.xsd  
             ">
-	<bean id="shineClusterChannelName" class="java.lang.String">
-		<constructor-arg type="java.lang.String" value="PAMIRS_SHINE" />
-	</bean>
-
-	<bean id="shineClusterChannel" class="com.taobao.pamirs.cache.store.ExtendedChannel"
-		factory-method="getInstance">
-	</bean>
-
-
-	<bean id="methodSyncServerBean" class="com.taobao.pamirs.cache.event.MethodSyncServerBean">
-		<property name="channel" ref="shineClusterChannel" />
-	</bean>
-	
-	   <bean class="com.taobao.pamirs.cache.proxy.CacheAspect"
-        factory-method="aspectOf">
-        <property name="methodSyncServerBean" ref="methodSyncServerBean" />
+	<bean id="configer" class="com.taobao.pamirs.cache.store.EhCacheConfigurator" />
+    <bean id="config" class="net.sf.ehcache.config.Configuration"
+        factory-bean="configer" factory-method="suck">
+        <constructor-arg ref="hosts" />
+        <constructor-arg ref="caches" index="1" />
     </bean>
-    
-    <bean id="contextApplicationContextProvider" class="com.taobao.pamirs.cache.store.ApplicationContextProvider"></bean>
-    
+    <bean id="caches" class="java.lang.String">
+        <constructor-arg value="PAMIRS_CACHE,TADGET_CACHE, COMPONENT_CACHE" />
+    </bean>
+    <bean id="cacheManager" class="net.sf.ehcache.CacheManager">
+        <constructor-arg ref="config" />
+    </bean>
+    <bean id="pamirsCache" class="net.sf.ehcache.Cache" factory-bean="cacheManager"
+        factory-method="getCache">
+        <constructor-arg value="PAMIRS_CACHE" />
+    </bean>
+    <bean id="tadgetCache" class="net.sf.ehcache.Cache" factory-bean="cacheManager"
+        factory-method="getCache">
+        <constructor-arg value="TADGET_CACHE" />
+    </bean>
 
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 </beans>

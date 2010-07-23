@@ -12,11 +12,17 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.jgroups.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.taobao.pamirs.cache.event.MethodSyncServerBean;
 
+/**
+ * This file defines the Aspects
+ * 
+ * @author mengzhu
+ */
 @Aspect
 public class CacheAspect implements Serializable
 {
@@ -27,10 +33,20 @@ public class CacheAspect implements Serializable
 	private static Logger	     logger	          = LoggerFactory.getLogger(CacheAspect.class);
 	private CacheManager	     cacheManager;
 	private MethodSyncServerBean	methodSyncServerBean;
+	private Channel	             channel;
+
+	public Channel getChannel()
+	{
+		return channel;
+	}
+
+	public void setChannel(final Channel channel)
+	{
+		this.channel = channel;
+	}
 
 	public void setMethodSyncServerBean(final MethodSyncServerBean methodSyncServerBean)
 	{
-		System.out.println("setting " + methodSyncServerBean);
 		this.methodSyncServerBean = methodSyncServerBean;
 	}
 
@@ -146,6 +162,23 @@ public class CacheAspect implements Serializable
 	// }
 	// }
 
+	/**
+	 * intialize a map, and change it to PamirsReplicatedHashMap
+	 */
+	@Around("set(@com.taobao.pamirs.cache.Cached * *)")
+	public Object fieldRegitry(final ProceedingJoinPoint pjp) throws Throwable
+	{
+		try
+		{
+
+		} catch (final Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		return pjp;
+	}
+
 	@Pointcut("execution(@com.taobao.pamirs.cache.Sync * *(..))")
 	public void pc()
 	{
@@ -155,17 +188,6 @@ public class CacheAspect implements Serializable
 	@Around("pc() || call(@com.taobao.pamirs.cache.Sync * *(..))")
 	public Object test(final ProceedingJoinPoint jp) throws Throwable
 	{
-		System.out.println("调用方法: " + methodSyncServerBean.getServerInstance().info());
-
-		methodSyncServerBean
-		        .getServerInstance()
-		        .callRemoteMethods(
-		                "invokeMethod",
-		                new Object[]
-		                                                                            { jp.getSignature()
-		                                                                                    .toLongString() },
-		                new Class[]
-		                                                                                                        { String.class });
 		return jp.proceed();
 	}
 }
