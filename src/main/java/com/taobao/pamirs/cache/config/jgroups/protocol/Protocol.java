@@ -1,4 +1,4 @@
-package com.taobao.pamirs.cache.protocol;
+package com.taobao.pamirs.cache.config.jgroups.protocol;
 
 import java.util.Properties;
 
