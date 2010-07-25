@@ -8,6 +8,7 @@ import net.sf.ehcache.Element;
 
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 
+import com.taobao.pamirs.cache.Cached;
 import com.taobao.pamirs.cache.protocol.EthernetUtil;
 
 public class EhCacheTest extends
@@ -34,12 +35,12 @@ public class EhCacheTest extends
 	@Override
 	protected String getConfigPath()
 	{
-		return "/pamirs-ehcache-config-test.xml";
+		return "/pamirs-cache-config-test.xml";
 	}
 
 	public void testPut() throws Exception
 	{
-		for (int i = 0; i < 10; ++i)
+		for (int i = 0; i < 0; ++i)
 		{
 			final Map m = new HashMap();
 			m.put("[" + EthernetUtil.getNonLoopAddress() + "]: " + i, "[value] " + i);
@@ -50,6 +51,15 @@ public class EhCacheTest extends
 			System.out.println(pamirsCache.getKeys());
 			Thread.sleep(1000);
 		}
+	}
+	@Cached
+	Map<String, String> map;
+	
+	public void testInterceptMap()
+	{
+		map = new HashMap<String, String>();
+		map.put("key", "m");
+		System.out.println(map.getClass());
 	}
 
 }

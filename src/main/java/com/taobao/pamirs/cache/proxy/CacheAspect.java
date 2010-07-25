@@ -2,9 +2,11 @@ package com.taobao.pamirs.cache.proxy;
 
 import java.io.Serializable;
 import java.lang.management.ManagementFactory;
+import java.util.HashMap;
 
 import javax.management.MBeanServer;
 
+import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.management.ManagementService;
 
@@ -17,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.taobao.pamirs.cache.event.MethodSyncServerBean;
+import com.taobao.pamirs.cache.store.PamirsReplicatedHashMap;
 
 /**
  * This file defines the Aspects
@@ -69,98 +72,6 @@ public class CacheAspect implements Serializable
 		}
 	}
 
-	// @Pointcut("@annotation(com.taobao.pamirs.cache.Cached)")
-	// private void testBeanExecution()
-	// {
-	// }
-	//
-	// @Around(
-	// value =
-	// "within(comd.taobao.pamirs..*) && call(* java.util.Map.get(..)) || call(* java.util.Map.contain*(..))")
-	// public Object queryCache(final ProceedingJoinPoint jp) throws Throwable
-	// {
-	// if (logger.isDebugEnabled())
-	// {
-	// logger.debug(jp.getSignature().getName());
-	// logger.debug(jp.toLongString());
-	// logger.debug("[queryCache]得到数据: " + Arrays.toString(jp.getArgs()));
-	// }
-	// final Object key = jp.getArgs()[0];
-	//
-	// final Cache cache = cacheManager.getCache("pamirs-cache");
-	// if (cache != null)
-	// {
-	// if (cache.get(key) == null)
-	// {
-	// return jp.proceed();
-	// } else
-	// {
-	// logger.info("元素[" + cache.get(key) + "]已经被缓存");
-	// return cache.get(key);
-	// }
-	// } else
-	// {
-	// logger.info("缓存获取失败");
-	// }
-	//
-	// return jp.proceed();
-	// }
-	//
-	// @Around("call(* java.util.Map.remove(..))")
-	// public Object removeCache(final ProceedingJoinPoint jp) throws Throwable
-	// {
-	// try
-	// {
-	// final Cache cache = cacheManager.getCache("pamirs-cache");
-	// final Object key = jp.getArgs()[0];
-	//
-	// if (cache != null)
-	// {
-	// if (cache.get(key) != null)
-	// {
-	// cache.remove(key, false);
-	//
-	// logger.info("Remove Element: key=" + key + "");
-	// } else
-	// {
-	// logger.info("Element has been removed!");
-	// }
-	// }
-	// return jp.proceed();
-	// } catch (final Exception e)
-	// {
-	// e.printStackTrace();
-	// return null;
-	// }
-	// }
-	//
-	// @Around("call(* java.util.Map.put(..))")
-	// public Object putCache(final ProceedingJoinPoint jp) throws Throwable
-	// {
-	// try
-	// {
-	// final Cache cache = cacheManager.getCache("pamirs-cache");
-	// final Object key = jp.getArgs()[0];
-	// final Object value = jp.getArgs()[1];
-	//
-	// if (cache != null)
-	// {
-	// if ((cache.get(key) == null) || !cache.get(key).getValue().equals(value))
-	// {
-	// final Element element = new Element(key, value);
-	// cache.put(element, false);
-	// } else
-	// {
-	//
-	// }
-	// }
-	// return jp.proceed();
-	// } catch (final Exception e)
-	// {
-	// e.printStackTrace();
-	// return null;
-	// }
-	// }
 
 	/**
 	 * intialize a map, and change it to PamirsReplicatedHashMap
@@ -170,13 +81,21 @@ public class CacheAspect implements Serializable
 	{
 		try
 		{
-
+			String data = pjp.getSignature().toLongString();
+			if (data.indexOf("java.util.Map")>=0)
+			{
+				Cache cache = cacheManager.getCache("PAMIRS_CACHE");
+				return pjp.proceed(new Object[]{new PamirsReplicatedHashMap<Serializable, Serializable>(new HashMap<Serializable, Serializable>(), cache)});
+			}
+			else
+			{
+				return pjp.proceed();
+			}
 		} catch (final Exception e)
 		{
 			e.printStackTrace();
-			return null;
+			return pjp.proceed();
 		}
-		return pjp;
 	}
 
 	@Pointcut("execution(@com.taobao.pamirs.cache.Sync * *(..))")
@@ -188,6 +107,13 @@ public class CacheAspect implements Serializable
 	@Around("pc() || call(@com.taobao.pamirs.cache.Sync * *(..))")
 	public Object test(final ProceedingJoinPoint jp) throws Throwable
 	{
+		return jp.proceed();
+	}
+	
+	@Around("call(* com.taobao.pamirs.cache.store.PamirsReplicatedHashMap.*(..))")
+	public Object cacheInvoke(ProceedingJoinPoint jp) throws Throwable
+	{
+		System.err.println("Invoking my map! Hey, you are putting '" + jp.getArgs()[0] + "' with value '" + jp.getArgs()[1] + "' into my container!");
 		return jp.proceed();
 	}
 }

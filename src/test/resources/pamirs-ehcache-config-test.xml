@@ -15,11 +15,15 @@
 		<constructor-arg value="192.168.207.119[9900],192.168.207.118[9900],192.168.207.116[9900],10.13.43.21[9900]" />
 		<constructor-arg ref="caches" index="1" />
 	</bean>
+		<bean id="mconfig" class="net.sf.ehcache.config.Configuration"
+		factory-bean="configer" factory-method="multiple_suck">
+		<constructor-arg ref="caches"/>
+	</bean>
 	<bean id="caches" class="java.lang.String">
 		<constructor-arg value="PAMIRS_CACHE,TADGET_CACHE, COMPONENT_CACHE" />
 	</bean>
 	<bean id="cacheManager" class="net.sf.ehcache.CacheManager">
-		<constructor-arg ref="config" />
+		<constructor-arg ref="mconfig" />
 	</bean>
 	<bean id="pamirsCache" class="net.sf.ehcache.Cache" factory-bean="cacheManager"
 		factory-method="getCache">
