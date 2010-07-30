@@ -1,9 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<version>1.0.1</version>
+	<parent>
+		<artifactId>pamirs-parent</artifactId>
+		<groupId>com.taobao.pamirs</groupId>
+		<version>1.0.3</version>
+	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.taobao.pamirs.cache</groupId>
 	<artifactId>pamirs-cache</artifactId>
+	<version>1.0.1</version>
 	<name>Pamirs Cache</name>
 	<scm>
 		<connection>
@@ -19,16 +24,6 @@
 	<build>
 		<finalName>pamirsshine</finalName>
 		<plugins>
-		<plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.1</version>
-        <configuration>
-          <verbose>true</verbose>
-          <fork>true</fork>
-          <compilerVersion>1.6</compilerVersion>
-        </configuration>
-      </plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
@@ -132,6 +127,12 @@
 			<version>3.2.1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.taobao.hsf</groupId>
+			<artifactId>hsf.unit</artifactId>
+			<version>1.0.1</version>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.aspectj</groupId>
@@ -144,12 +145,19 @@
 			<artifactId>aspectjrt</artifactId>
 			<version>1.6.7</version>
 		</dependency>
-		
+
 		<dependency>
-    <groupId>org.slf4j</groupId>
-    <artifactId>slf4j-api</artifactId>
-    <version>1.6.1</version>
-</dependency>
+			<groupId>com.taobao.logstat</groupId>
+			<artifactId>logstat-common</artifactId>
+			<version>1.0.2</version>
+			<scope>test</scope>
+		</dependency>
+
+        <dependency>
+            <groupId>com.taobao.pamirs.commons</groupId>
+        	<artifactId>pamirs-commons</artifactId>
+        	<version>1.1.8</version>
+        </dependency>
 
 	</dependencies>
 </project>

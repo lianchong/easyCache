@@ -11,10 +11,10 @@
             http://www.springframework.org/schema/context/spring-context-2.5.xsd  
             ">
 	<bean id="contextApplicationContextProvider"
-		class="com.taobao.pamirs.cache.store.ApplicationContextProvider"></bean>
+		class="com.taobao.pamirs.cache.helper.ApplicationContextProvider"></bean>
 	<import resource="pamirs-ehcache-config-test.xml"/>
 	
-	<bean id="cacheAspect" class="com.taobao.pamirs.cache.proxy.CacheAspect" factory-method="aspectOf">
+	<bean id="cacheAspect" class="com.taobao.pamirs.cache.aspect.CacheAspect" factory-method="aspectOf">
 		<property name="cacheManager" ref="cacheManager"/>
 	</bean>
 

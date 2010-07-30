@@ -11,7 +11,6 @@ public class PamirsCacheEventFactory extends CacheEventListenerFactory
 	@Override
 	public CacheEventListener createCacheEventListener(final Properties arg0)
 	{
-		// TODO Auto-generated method stub
 		return new PamirsCacheEvent();
 	}
 

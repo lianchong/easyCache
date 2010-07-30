@@ -1,4 +1,4 @@
-package com.taobao.pamirs.cache.event;
+package com.taobao.pamirs.cache.replicator.service;
 
 import java.io.Serializable;
 

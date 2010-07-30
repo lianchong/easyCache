@@ -1,4 +1,4 @@
-package com.taobao.pamirs.cache.store;
+package com.taobao.pamirs.cache.replicator.data;
 
 import java.io.Serializable;
 
