@@ -6,10 +6,10 @@
 		<version>1.0.3</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.taobao.pamirs.cache</groupId>
-	<artifactId>pamirs-cache</artifactId>
-	<version>1.0.1</version>
-	<name>Pamirs Cache</name>
+	<groupId>com.taobao.pamirs.sync</groupId>
+	<artifactId>pamirs-sync</artifactId>
+	<version>1.0.0</version>
+	<name>Pamirs Sync</name>
 	<scm>
 		<connection>
 	  scm:svn:http://svn.taobao-develop.com/repos/pamirs-hecla/trunk/
@@ -22,7 +22,7 @@
 	</scm>
 
 	<build>
-		<finalName>pamirsshine</finalName>
+		<finalName>pamirs-sync</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -47,21 +47,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.4.3</version>
-				<configuration>
-					<skip>false</skip>
-
-					<systemPropertyVariables>
-						<java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
-						<jgroups.tcpping.initial_hosts>10.13.43.21[9900],192.168.207.116[9900]</jgroups.tcpping.initial_hosts>
-					</systemPropertyVariables>
-
-				</configuration>
-			</plugin>
-
 		</plugins>
 	</build>
 
@@ -146,18 +131,28 @@
 			<version>1.6.7</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.taobao.logstat</groupId>
-			<artifactId>logstat-common</artifactId>
-			<version>1.0.2</version>
-			<scope>test</scope>
-		</dependency>
-
         <dependency>
             <groupId>com.taobao.pamirs.commons</groupId>
         	<artifactId>pamirs-commons</artifactId>
         	<version>1.1.8</version>
         </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.15</version>
+    </dependency>
+    <dependency>
+	    <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+	    <version>1.6.1</version>
+    </dependency>
+    <dependency>
+	    <groupId>com.taobao.configserver</groupId>
+	    <artifactId>config-client</artifactId>
+	    <version>1.3.2</version>
+    </dependency>
+
+
 
 	</dependencies>
 </project>

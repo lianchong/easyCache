@@ -9,16 +9,13 @@
             http://www.springframework.org/schema/context
             http://www.springframework.org/schema/context/spring-context-2.5.xsd  
             ">
-	<bean id="configer" class="com.taobao.pamirs.cache.config.EhCacheConfigurator" />
+	<bean id="configer" class="com.taobao.pamirs.sync.config.EhCacheConfigurator" />
 	<bean id="config" class="net.sf.ehcache.config.Configuration"
 		factory-bean="configer" factory-method="suck">
-		<constructor-arg value="192.168.207.116[9981],10.13.18.75[9981],10.13.18.52[9981]" />
+		<constructor-arg value="192.168.213.201[9981]" />
 		<constructor-arg ref="caches" index="1" />
 	</bean>
-	<bean id="serviceInvokeConfig" class="net.sf.ehcache.config.Configuration"
-		factory-bean="configer" factory-method="sit">
-		<constructor-arg value="192.168.207.116[9981],10.13.18.75[9981],10.13.18.52[9981]" />
-	</bean>
+
 	<bean id="mconfig" class="net.sf.ehcache.config.Configuration"
 		factory-bean="configer" factory-method="multiple_suck">
 		<constructor-arg ref="caches" />
@@ -29,15 +26,8 @@
 	<bean id="cacheManager" class="net.sf.ehcache.CacheManager">
 		<constructor-arg ref="config" />
 	</bean>
-	<bean id="serviceInvokeManager" class="net.sf.ehcache.CacheManager">
-		<constructor-arg ref="serviceInvokeConfig" />
-	</bean>
-	<bean id="serviceInvokeChannel" class="com.taobao.pamirs.cache.replicator.data.ExtendedChannel" factory-method="getInstance">
-	   <constructor-arg value="10.13.18.101[7800],10.13.59.178[7800],192.168.207.118[7800]" />
-	</bean>
-	<bean id="serviceInvokeTunnel" class="net.sf.ehcache.Cache" factory-bean="serviceInvokeManager"
-	factory-method="getCache">
-	   <constructor-arg value="SERVICE_INVOKE_TUNNEL"/>
+	<bean id="serviceInvokeChannel" class="com.taobao.pamirs.sync.replicator.data.ExtendedChannel" factory-method="getInstance">
+	   <constructor-arg value="192.168.213.201[7800],10.13.18.70[7800]" />
 	</bean>
 	<bean id="pamirsCache" class="net.sf.ehcache.Cache" factory-bean="cacheManager"
 		factory-method="getCache">

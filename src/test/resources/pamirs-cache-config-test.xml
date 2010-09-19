@@ -10,12 +10,23 @@
             http://www.springframework.org/schema/context
             http://www.springframework.org/schema/context/spring-context-2.5.xsd  
             ">
+    <import resource="pamirs-ehcache-config-test.xml" />
+    <context:component-scan base-package="com.taobao.pamirs.sync.replicator.service"></context:component-scan>
+	<bean id="cacheAspect" class="com.taobao.pamirs.sync.aspect.CacheAspect"
+		factory-method="aspectOf">
+		<property name="cacheManager" ref="cacheManager" />
+		<property name="serviceInvokeChannel" ref="serviceInvokeChannel" />
+	</bean>
 	<bean id="contextApplicationContextProvider"
-		class="com.taobao.pamirs.cache.helper.ApplicationContextProvider"></bean>
-	<import resource="pamirs-ehcache-config-test.xml"/>
+		class="com.taobao.pamirs.sync.helper.ApplicationContextProvider"></bean>
 	
-	<bean id="cacheAspect" class="com.taobao.pamirs.cache.aspect.CacheAspect" factory-method="aspectOf">
-		<property name="cacheManager" ref="cacheManager"/>
+
+
+
+	<context:component-scan base-package="com.taobao.pamirs.sync.spi">
+	</context:component-scan>
+	<bean id="membershipConfiger" class="com.taobao.pamirs.sync.config.MembershipConfiger">
+	   <property name="serviceInvokeChannel" ref="serviceInvokeChannel"></property>
 	</bean>
 
 

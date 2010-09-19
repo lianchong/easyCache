@@ -10,24 +10,33 @@
             http://www.springframework.org/schema/context
             http://www.springframework.org/schema/context/spring-context-2.5.xsd  
             ">
-	<bean id="configer" class="com.taobao.pamirs.cache.config.EhCacheConfigurator" />
+     <context:component-scan base-package="com.taobao.pamirs.sync.replicator.service"></context:component-scan>
+	<bean id="configer" class="com.taobao.pamirs.sync.config.EhCacheConfigurator" />
 	<bean id="config" class="net.sf.ehcache.config.Configuration"
 		factory-bean="configer" factory-method="suck">
 		<constructor-arg ref="hosts" />
 		<constructor-arg ref="caches" index="1" />
 	</bean>
 	<bean id="caches" class="java.lang.String">
-		<constructor-arg value="PAMIRS_CACHE,TADGET_CACHE, COMPONENT_CACHE" />
+		<constructor-arg value="TADGET_CACHE,COMPONENT_CACHE" />
 	</bean>
 	<bean id="cacheManager" class="net.sf.ehcache.CacheManager">
 		<constructor-arg ref="config" />
 	</bean>
-	<bean id="cacheAspect" class="com.taobao.pamirs.cache.aspect.CacheAspect"
+	<bean id="cacheAspect" class="com.taobao.pamirs.sync.aspect.CacheAspect"
 		factory-method="aspectOf">
 		<property name="cacheManager" ref="cacheManager" />
 	</bean>
-	<context:component-scan base-package="com.taobao.pamirs.cache.spi">
+	<context:component-scan base-package="com.taobao.pamirs.sync.spi">
 	</context:component-scan>
+	<bean id="serviceInvokeChannel" class="com.taobao.pamirs.sync.replicator.data.ExtendedChannel" factory-method="getInstance">
+       <constructor-arg ref="hosts" />
+    </bean>
+    <bean id="membershipConfiger" class="com.taobao.pamirs.sync.config.MembershipConfiger">
+       <property name="serviceInvokeChannel" ref="serviceInvokeChannel"></property>
+    </bean>
+    <bean id="contextApplicationContextProvider"
+        class="com.taobao.pamirs.sync.helper.ApplicationContextProvider"></bean>
 
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 </beans>
